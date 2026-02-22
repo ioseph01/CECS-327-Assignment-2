@@ -1,1 +1,1 @@
-# CECS-327-Assignment-2
+# CECS-327-Assignment-2: Campus Smart Parking Finder 
