@@ -3,6 +3,7 @@ import threading
 import json
 import struct
 import logging
+from zoneinfo import ZoneInfo
 import uuid
 import datetime
 import time
@@ -16,7 +17,7 @@ log = logging.getLogger(__name__)
 
 
 def log_event(event, **kwargs):
-    entry = {"ts": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    entry = {"ts": datetime.datetime.now(ZoneInfo("America/Los_Angeles")).isoformat(),
              "event": event}
     entry.update(kwargs)
     log.info(json.dumps(entry))
@@ -85,7 +86,7 @@ subscribers = {}   # { lot_id: { sub_id: Queue } }
 
 
 def publish(lot_id, free):
-    ts  = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts  = datetime.datetime.now(ZoneInfo("America/Los_Angeles")).isoformat()
     msg = f"EVENT {lot_id} {free} {ts}"
     with sub_lock:
         for sub_id, q in subscribers.get(lot_id, {}).items():

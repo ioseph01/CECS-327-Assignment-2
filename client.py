@@ -25,7 +25,7 @@ def on_event(event_str):
         free   = parts[2]
         ts     = parts[3] if len(parts) > 3 else ""
         with print_lock:
-            print(f"\r  [LIVE] Lot {lot_id} → {free} free  ({ts[:19]})")
+            print(f"\r  [LIVE] Lot {lot_id} -> {free} free  ({ts[:19]})")
             print("parking> ", end="", flush=True)
 
 
