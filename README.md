@@ -17,4 +17,4 @@ In one or more terminals, launch clients with `python3 client.py`.
 - `CANCEL A ABC123`
 
 ## RPC path
-client.py → client_stub.py → TCP → rpc_skeleton.py → server.py → rpc_skeleton.py → client_stub.py → client.py
+client.py -> client_stub.py -> TCP -> rpc_skeleton.py -> server.py -> rpc_skeleton.py -> client_stub.py -> client.py
