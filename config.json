@@ -1,0 +1,31 @@
+{
+  "server_host": "0.0.0.0",
+  "ports": {
+    "text":   9000,
+    "rpc":    9001,
+    "sensor": 9002
+  },
+  "client": {
+    "server_host": "127.0.0.1"
+  },
+  "threading": {
+    "max_clients":     10,
+    "backlog":          5,
+    "sensor_workers":   2
+  },
+  "reservations": {
+    "ttl_seconds":    300,
+    "expiry_interval": 60
+  },
+  "pubsub": {
+    "subscriber_queue_size": 20
+  },
+  "sensor_queue": {
+    "max_size": 200
+  },
+  "lots": [
+    {"id": "A", "capacity": 10},
+    {"id": "B", "capacity": 5},
+    {"id": "C", "capacity": 3}
+  ]
+}
