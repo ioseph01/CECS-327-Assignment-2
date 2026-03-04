@@ -27,13 +27,14 @@ client.py -> client_stub.py -> TCP -> rpc_skeleton.py -> server.py -> rpc_skelet
 JSON is used so not too much worry about endianess. The concern becomes data managing, message formatting, and error handling. In that case, we use a struct and big endian bytes denoted by "!I". 
 
 ## Framing and Marshalling
-Text protocol over port 9000 is newline-delimited UTF-8 as specified in the requirements. RPC protocol over port 9001 is length-prefixed JSON with a 4-byte-big-endian length header and a UTF-8 JSON body.
+Text protocol over port 9000 is newline-delimited UTF-8 as specified in the requirements. RPC protocol over port 9001 is length-prefixed JSON with a 4-byte-big-endian length header and a UTF-8 JSON body. 
+{rpcId:uint32, method:str, args:any[]}
 
 ## Thread Model
 Both the text and RPC servers use a bounded thread pool instead of a thread-per-connection to avoid the cost of context-switches and taking on too many clients. The number of threads and the backlog as well as threads for the sensor is set in the configuration json file. 
 
 ## Timeout Policy
-For clients, the server sets a 60-second idle timeout. If a connection is established but nothing is sent, the client is quietly dropped and its thread is freed.
+For clients, the server sets a 5 second timeout. If the replies from the queue is not receieved within the timeout period a RpcTimeoutError exception will occur.
 
 ## Publish/Subscribe System
 The approach we took for our design was a mix of both TCP connections for events and dedicated notifier threads for subscriptions. Subscribed clients are dedicated a thread and queue for non-blocking while the separate TCP connection is for distinct connections between RPC requests and event reception.
