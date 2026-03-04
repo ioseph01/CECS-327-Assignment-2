@@ -1,7 +1,9 @@
 # CECS-327-Assignment-2: Campus Smart Parking Finder 
 
+## Setup:
+No dependencies except Python and built-in libraries are used so there is no need to create a virtual environment and activate it.
 
-## TO RUN:
+## To Run:
 
 In one terminal, launch the server with `python3 server.py`.
 
