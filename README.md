@@ -28,3 +28,7 @@ JSON is used so not too much worry about endianess. The concern becomes data man
 
 ## Publish/Subscribe System
 The approach we took for our design was a mix of both TCP connections for events and dedicated notifier threads for subscriptions. Subscribed clients are dedicated a thread and queue for non-blocking while the separate TCP connection is for distinct connections between RPC requests and event reception.
+
+## Back-Pressure Policy
+ 	The current policy for handling slow subscribers and back-pressure is discarding the oldest message in a subscriber’s update queue to make room for the newest. This action is logged appropriately unless the client’s TCP errors in which case, the client is unsubscribed. The reason for dropping the oldest is because clients that are subscribed should only care about the present state of the lot so the most recent updates from the sensor are more valuable. Older updates on the other hand are already missed and do not provide any valuable information about the current lot state. 
+
