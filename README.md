@@ -14,7 +14,7 @@ In one or more terminals, launch clients with `python3 client.py`.
 - `LOTS`
 - `RESERVE <lot> ABC123`
 - `AVAIL <lot>`
-- `CANCEL <lot? ABC123`
+- `CANCEL <lot> ABC123`
 - `SUB <lot>`
 - `UNSUB <lot>`
 - `HELP`
