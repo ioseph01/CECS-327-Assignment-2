@@ -1,1 +1,8 @@
+Implemented comments on missing functions. Reformatted outputs to go well with all user command functions.
+Added a missing user input function to the client.
 
+A bug I encountered was during testing, whenever I was typing with the simulation running and live messages were
+outputted the next command line would be moved in between all the messages. To avoid this from happening we implement
+the '/r', which causes the prompt to reask the user for an entry.
+
+One design change was more of making all codes more readable and understanding.
