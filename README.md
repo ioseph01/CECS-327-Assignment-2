@@ -26,6 +26,9 @@ client.py -> client_stub.py -> TCP -> rpc_skeleton.py -> server.py -> rpc_skelet
 ## Note about endianess: 
 JSON is used so not too much worry about endianess. The concern becomes data managing, message formatting, and error handling. In that case, we use a struct and big endian bytes denoted by "!I". 
 
+## Framing and Marshalling
+Text protocol over port 9000 is newline-delimited UTF-8 as specified in the requirements. RPC protocol over port 9001 is length-prefixed JSON with a 4-byte-big-endian length header and a UTF-8 JSON body.
+
 ## Thread Model
 Both the text and RPC servers use a bounded thread pool instead of a thread-per-connection to avoid the cost of context-switches and taking on too many clients. The number of threads and the backlog as well as threads for the sensor is set in the configuration json file. 
 
