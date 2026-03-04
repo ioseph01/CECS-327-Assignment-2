@@ -18,3 +18,5 @@ In one or more terminals, launch clients with `python3 client.py`.
 
 ## RPC path
 client.py -> client_stub.py -> TCP -> rpc_skeleton.py -> server.py -> rpc_skeleton.py -> client_stub.py -> client.py
+
+**Note about endianess**: JSON is used so not too much worry about endianess. The concern becomes data managing, message formatting, and error handling. 
