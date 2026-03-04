@@ -1,0 +1,5 @@
+I implemented scripts for testing the asynchronous pub-sub and for testing the throughput and latency.
+
+A bug I fixed was with the messaging path not properly going through the RPC layer.
+
+One design change I made was the format of the logging regarding the event category and time and time zone.
