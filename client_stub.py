@@ -18,14 +18,10 @@ class ParkingClient:
         self._port    = port
         self._timeout = timeout
         self.on_event = on_event
-
         self._next_id  = 0
         self._id_lock  = threading.Lock()
-
         self._reply_queue = queue.Queue()
-
         self._sock = socket.create_connection((host, port))
-
         self._recv_thread = threading.Thread(
             target=self._recv_loop,
             daemon=True,
@@ -33,37 +29,36 @@ class ParkingClient:
         )
         self._recv_thread.start()
 
-    """ PUBLIC API """
-
+    """Interface"""
+    # Returns List<Lot>
     def getLots(self):
-        '''Return list of {id, capacity, occupied, free}.'''
         return self._call("getLots")
 
+    # Returns the lots availability based on lot_id
     def getAvailability(self, lot_id: str) -> int:
-        '''Return free space count for lot_id.'''
         return self._call("getAvailability", lot_id)
 
+    # Returns a bool if the reservation is denied or confirmed
     def reserve(self, lot_id: str, plate: str) -> bool:
-        '''Reserve a spot. Returns True. Raises RpcError on FULL/EXISTS.'''
         return self._call("reserve", lot_id, plate)
 
+    # Returns a bool if the reservation was canceled or no reservation existed
     def cancel(self, lot_id: str, plate: str) -> bool:
-        '''Cancel a reservation. Returns True. Raises RpcError on NOT_FOUND.'''
         return self._call("cancel", lot_id, plate)
 
-    """ PUB-SUB """
-
+    """Pub/Sub API (via RPC)"""
+    # Subscribe feature returns a subId confirming you subscribed
     def subscribe(self, lot_id: str) -> str:
         return self._call("subscribe", lot_id)
-
+    # Unsubscribe feature returns a bool of canceling subscription or subscription was not found
     def unsubscribe(self, sub_id: str) -> bool:
         return self._call("unsubscribe", sub_id)
 
     def close(self):
         self._sock.close()
 
-    """ PRIVATE FUNCTIONS """
-
+    """Private functions"""
+    # Thread continuously reads messages from the server and routes
     def _recv_loop(self):
         while True:
             try:
@@ -71,23 +66,23 @@ class ParkingClient:
             except (OSError, ConnectionError):
                 self._reply_queue.put(None)   
                 break
-
             if "event" in msg:
-                cb = self.on_event
-                if cb is not None:
+                call_back = self.on_event
+                if call_back is not None:
                     try:
-                        cb(msg["event"])
+                        call_back(msg["event"])
                     except Exception:
                         pass   
             else:
                 self._reply_queue.put(msg)
 
-
+    # Generates a unique rpcId
     def _make_id(self):
         with self._id_lock:
             self._next_id += 1
             return self._next_id
 
+    # Makes an RPC call and waits for reply
     def _call(self, method, *args):
         rpc_id  = self._make_id()
         request = {"rpcId": rpc_id, "method": method, "args": list(args)}
@@ -98,33 +93,32 @@ class ParkingClient:
         except queue.Empty:
             raise RpcTimeoutError(
                 f"No reply for '{method}' (rpcId={rpc_id}) "
-                f"within {self._timeout}s"
-            )
-
+                f"within {self._timeout}s")
         if reply is None:
             raise ConnectionError("Server closed the connection")
-
         if reply.get("error"):
             raise RpcError(reply["error"])
-
         return reply["result"]
 
+    # Send an object to JSON
     def _send(self, obj):
         body   = json.dumps(obj).encode("utf-8")
         header = struct.pack("!I", len(body))
         self._sock.sendall(header + body)
 
+    # Reads JSON message
     def _recv(self):
         header = self._recv_exact(4)
         length = struct.unpack("!I", header)[0]
         body   = self._recv_exact(length)
         return json.loads(body.decode("utf-8"))
 
+    # Reads the exact reading from socket until n bytes
     def _recv_exact(self, n):
-        buf = b""
-        while len(buf) < n:
-            chunk = self._sock.recv(n - len(buf))
-            if not chunk:
+        buffer = b""
+        while len(buffer) < n:
+            data_piece = self._sock.recv(n - len(buffer))
+            if not data_piece:
                 raise ConnectionError("Server closed the connection unexpectedly")
-            buf += chunk
-        return buf
+            buffer += data_piece
+        return buffer
