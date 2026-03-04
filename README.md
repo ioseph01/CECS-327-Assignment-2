@@ -12,10 +12,12 @@ In one or more terminals, launch clients with `python3 client.py`.
 ## Then type commands like:
 - `PING`
 - `LOTS`
-- `RESERVE A ABC123`
-- `AVAIL A`
-- `CANCEL A ABC123`
-
+- `RESERVE <lot> ABC123`
+- `AVAIL <lot>`
+- `CANCEL <lot? ABC123`
+- `SUB <lot>`
+- `UNSUB <lot>`
+- `HELP`
 ## RPC path
 client.py -> client_stub.py -> TCP -> rpc_skeleton.py -> server.py -> rpc_skeleton.py -> client_stub.py -> client.py
 
